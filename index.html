@@ -1288,7 +1288,7 @@ function startNewConvo() {
 
 // ── Claude API ────────────────────────────────
 async function callClaude() {
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch('https://withered-bar-139a.liziting2023.workers.dev', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
