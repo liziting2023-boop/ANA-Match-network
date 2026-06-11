@@ -618,10 +618,10 @@ kbd {
         <h2>Ask across your studio network</h2>
         <p>BD reports from Vertic, Winking GDG, Winking Nanjing, Ampera NA, OPC, Mineloader, and BIG (Jocelyn) are loaded and ready to query.</p>
         <div class="chips">
-          <div class="chip" onclick="useChip(this)">Vertic与NA BD (Ampera/Luc)有哪些重叠客户？</div>
-          <div class="chip" onclick="useChip(this)">Mineloader与BIG有哪些重叠客户？</div>
-          <div class="chip" onclick="useChip(this)">OPC与NA BD (Ampera/Luc)有哪些重叠客户？</div>
-          <div class="chip" onclick="useChip(this)">Winking Nanjing与BIG有哪些重叠客户？</div>
+          <div class="chip" onclick="useChip(this)">Which clients do Vertic and NA BD (Ampera/Luc) have in common?</div>
+          <div class="chip" onclick="useChip(this)">Which clients do Mineloader and BIG have in common?</div>
+          <div class="chip" onclick="useChip(this)">Which clients do OPC and NA BD (Ampera/Luc) have in common?</div>
+          <div class="chip" onclick="useChip(this)">Which clients do Winking Nanjing and BIG have in common?</div>
         </div>
       </div>
     </div>
@@ -672,23 +672,22 @@ function doLogin() {
 }
 
 // ── Follow-up question suggestions ────────────
-// Each chip is a 2-studio comparison — faster and more focused
 const FOLLOWUP_CHIPS = [
-  'Vertic与NA BD (Ampera/Luc)有哪些重叠客户？',
-  'Vertic与BIG有哪些重叠客户？',
-  'Mineloader与NA BD (Ampera/Luc)有哪些重叠客户？',
-  'Mineloader与BIG有哪些重叠客户？',
-  'OPC与NA BD (Ampera/Luc)有哪些重叠客户？',
-  'OPC与BIG有哪些重叠客户？',
-  'Winking Nanjing与NA BD (Ampera/Luc)有哪些重叠客户？',
-  'Winking Nanjing与BIG有哪些重叠客户？',
-  'Which studios overlap with NA BD on Riot Games?',
-  'Which studios overlap with NA BD on Bungie?',
-  'Which studios overlap with NA BD on Gearbox?',
-  'Which studios overlap with BIG on Riot Games?',
-  'Which studios overlap with BIG on Gearbox?',
+  'Which clients do Vertic and NA BD (Ampera/Luc) have in common?',
+  'Which clients do Vertic and BIG have in common?',
+  'Which clients do Mineloader and NA BD (Ampera/Luc) have in common?',
+  'Which clients do Mineloader and BIG have in common?',
+  'Which clients do OPC and NA BD (Ampera/Luc) have in common?',
+  'Which clients do OPC and BIG have in common?',
+  'Which clients do Winking Nanjing and NA BD (Ampera/Luc) have in common?',
+  'Which clients do Winking Nanjing and BIG have in common?',
+  'Which clients do Vertic and Mineloader have in common?',
+  'Which clients do Winking Nanjing and Vertic have in common?',
+  'Which clients do OPC and Mineloader have in common?',
+  'Which clients do Winking Nanjing and OPC have in common?',
   'Vertic and NA BD — which clients are they both pursuing?',
   'Mineloader and BIG — which clients are they both in contact with?',
+  'OPC and NA BD — which clients overlap?',
 ];
 
 function getFollowupChips() {
@@ -1426,10 +1425,10 @@ function startNewConvo() {
     <h2>Ask across your studio network</h2>
     <p>BD reports from Vertic, Winking GDG, Winking Nanjing, Ampera NA, OPC, Mineloader, and BIG (Jocelyn) are loaded and ready to query.</p>
     <div class="chips">
-      <div class="chip" onclick="useChip(this)">Vertic与NA BD (Ampera/Luc)有哪些重叠客户？</div>
-      <div class="chip" onclick="useChip(this)">Mineloader与BIG有哪些重叠客户？</div>
-      <div class="chip" onclick="useChip(this)">OPC与NA BD (Ampera/Luc)有哪些重叠客户？</div>
-      <div class="chip" onclick="useChip(this)">Winking Nanjing与BIG有哪些重叠客户？</div>
+      <div class="chip" onclick="useChip(this)">Which clients do Vertic and NA BD (Ampera/Luc) have in common?</div>
+      <div class="chip" onclick="useChip(this)">Which clients do Mineloader and BIG have in common?</div>
+      <div class="chip" onclick="useChip(this)">Which clients do OPC and NA BD (Ampera/Luc) have in common?</div>
+      <div class="chip" onclick="useChip(this)">Which clients do Winking Nanjing and BIG have in common?</div>
     </div>`;
   msgs.appendChild(welcome);
   qInput.focus();
