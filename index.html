@@ -440,8 +440,55 @@ kbd {
   color: var(--ink-mid);
 }
 
-@media (max-width: 720px) {
-  .main { grid-template-columns: 1fr; }
+/* ── Login page ── */
+#loginPage {
+  position: fixed; inset: 0; background: var(--bg);
+  display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.login-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 40px; width: 380px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08); text-align: center;
+}
+.login-logo {
+  width: 44px; height: 44px; border-radius: 11px; background: var(--ink);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+}
+.login-logo svg { width: 22px; height: 22px; fill: white; }
+.login-card h2 { font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.login-card p { font-size: 13.5px; color: var(--ink-dim); margin-bottom: 28px; line-height: 1.5; }
+.login-input {
+  width: 100%; padding: 11px 14px; border: 1.5px solid var(--border2);
+  border-radius: 9px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+  color: var(--ink); background: var(--bg); outline: none; margin-bottom: 12px;
+  transition: border-color 0.18s; text-align: center; letter-spacing: 1px;
+}
+.login-input:focus { border-color: var(--accent); background: var(--surface); }
+.login-btn {
+  width: 100%; padding: 11px; border-radius: 9px; border: none;
+  background: var(--accent); color: white; font-size: 14px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s; margin-bottom: 12px;
+}
+.login-btn:hover { background: #1a42d4; }
+.login-error { font-size: 13px; color: var(--red); display: none; margin-top: 4px; }
+.login-user-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
+  border-radius: 20px; background: var(--green-bg); border: 1px solid rgba(20,163,85,0.2);
+  font-size: 12px; color: var(--green); font-weight: 500; margin-top: 8px;
+}
+/* follow-up chips */
+.followup-chips {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+}
+.followup-chip {
+  padding: 6px 12px; border-radius: 16px; border: 1px solid var(--border2);
+  background: var(--bg); color: var(--ink-mid); font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; text-align: left; line-height: 1.4;
+}
+.followup-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+@media (max-width: 720px) {  .main { grid-template-columns: 1fr; }
   .sidebar { max-height: 200px; }
   .messages { padding: 18px 16px; }
   .input-bar { padding: 12px 14px 16px; }
@@ -450,6 +497,19 @@ kbd {
 </style>
 </head>
 <body>
+
+<div id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 16 16"><path d="M2 4h5v8H2zM9 4h5v4H9zM9 10h5v2H9z"/></svg>
+    </div>
+    <h2>BD Intelligence</h2>
+    <p>Studio Network · Confidential<br>Enter your access password to continue.</p>
+    <input class="login-input" type="password" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Access</button>
+    <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
+  </div>
+</div>
 
 <header>
   <div class="logo">
@@ -465,7 +525,7 @@ kbd {
     </button>
     <div class="pill">
       <div class="pill-dot"></div>
-      <span>7 studios loaded</span>
+      <span id="userBadge">7 studios loaded</span>
     </div>
   </div>
 </header>
@@ -556,10 +616,10 @@ kbd {
         <h2>Ask across your studio network</h2>
         <p>BD reports from Vertic, Winking GDG, Winking Nanjing, Ampera NA, OPC, Mineloader, and BIG (Jocelyn) are loaded and ready to query.</p>
         <div class="chips">
-          <div class="chip" onclick="useChip(this)">Which studios have active ongoing projects?</div>
-          <div class="chip" onclick="useChip(this)">Compare each studio's key client focus</div>
-          <div class="chip" onclick="useChip(this)">Where are cross-studio collaboration opportunities?</div>
-          <div class="chip" onclick="useChip(this)">Which clients are in discussion but not yet confirmed?</div>
+          <div class="chip" onclick="useChip(this)">Which studios have overlapping clients with Vertic?</div>
+          <div class="chip" onclick="useChip(this)">Which studios have contact with Riot Games?</div>
+          <div class="chip" onclick="useChip(this)">Where do BIG and the NA BD team have overlapping clients?</div>
+          <div class="chip" onclick="useChip(this)">Which clients are being pursued by multiple studios?</div>
         </div>
       </div>
     </div>
@@ -573,7 +633,7 @@ kbd {
           </svg>
         </button>
       </div>
-      <div class="input-hint"><kbd>Shift</kbd> + <kbd>Enter</kbd> to send &nbsp;·&nbsp; <kbd>Enter</kbd> for new line</div>
+      <div class="input-hint"><kbd>Enter</kbd> to send &nbsp;·&nbsp; <kbd>Shift</kbd>+<kbd>Enter</kbd> for new line &nbsp;·&nbsp; 支持中文提问</div>
     </div>
   </div>
 </div>
@@ -581,6 +641,51 @@ kbd {
 <script>
 let chatHistory = [];
 let busy = false;
+let currentUser = '';
+
+// ── Passwords ─────────────────────────────────
+const PASSWORDS = {
+  'Mango#7x2K': 'Claude',
+  'Tiger#4p9W': 'Luc',
+  'Storm#3q8R': 'Max',
+  'Pixel#6m1T': 'Kerry',
+  'Comet#5n4V': 'Johnny',
+  'Blaze#2w7Y': 'JB',
+  'Lunar#9k3P': 'Tina',
+};
+
+function doLogin() {
+  const pw = document.getElementById('pwInput').value.trim();
+  const user = PASSWORDS[pw];
+  if (user) {
+    currentUser = user;
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('userBadge').textContent = `● ${user}`;
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+
+// ── Follow-up question suggestions ────────────
+const FOLLOWUP_CHIPS = [
+  'Which studios also have contact with this client?',
+  'Are there overlapping clients between BIG and NA BD?',
+  'Which clients are being pursued by 3 or more studios?',
+  'Which Vertic clients overlap with other studios?',
+  'Which Winking clients overlap with Mineloader?',
+  'Which clients have NDA signed across studios?',
+  'Which studios are both in contact with Sucker Punch?',
+  'Which studios are both in contact with Bungie?',
+  'Which studios are both in contact with Riot Games?',
+  'Which clients are in active production vs. still in discussion?',
+];
+
+function getFollowupChips() {
+  const shuffled = [...FOLLOWUP_CHIPS].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 3);
+}
 
 // ── All studio content hard-coded ──────────────
 const DOCUMENTS = [
@@ -1244,6 +1349,25 @@ function addMsg(role, text) {
   const bub = document.createElement('div');
   bub.className = 'bubble';
   bub.innerHTML = role === 'ai' ? fmtAI(text) : `<p>${esc(text)}</p>`;
+
+  // Add follow-up chips after AI responses
+  if (role === 'ai') {
+    const chips = getFollowupChips();
+    const chipRow = document.createElement('div');
+    chipRow.className = 'followup-chips';
+    chips.forEach(q => {
+      const chip = document.createElement('button');
+      chip.className = 'followup-chip';
+      chip.textContent = q;
+      chip.onclick = () => {
+        qInput.value = q;
+        qInput.dispatchEvent(new Event('input'));
+        sendQuestion();
+      };
+      chipRow.appendChild(chip);
+    });
+    bub.appendChild(chipRow);
+  }
 
   wrap.appendChild(av);
   wrap.appendChild(bub);
