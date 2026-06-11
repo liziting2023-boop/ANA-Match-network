@@ -1410,10 +1410,23 @@ function startNewConvo() {
   chatHistory = [];
   const msgs = document.getElementById('messages');
   msgs.innerHTML = '';
-  const div = document.createElement('div');
-  div.className = 'history-reset';
-  div.innerHTML = `<span>New conversation started</span>`;
-  msgs.appendChild(div);
+  const welcome = document.createElement('div');
+  welcome.id = 'welcomeScreen';
+  welcome.className = 'welcome';
+  welcome.innerHTML = `
+    <div class="welcome-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><circle cx="12" cy="12" r="12"/></svg>
+      8 documents ready
+    </div>
+    <h2>Ask across your studio network</h2>
+    <p>BD reports from Vertic, Winking GDG, Winking Nanjing, Ampera NA, OPC, Mineloader, and BIG (Jocelyn) are loaded and ready to query.</p>
+    <div class="chips">
+      <div class="chip" onclick="useChip(this)">Which studios have overlapping clients with Vertic?</div>
+      <div class="chip" onclick="useChip(this)">Where do BIG and NA BD (Ampera/Luc) have overlapping clients?</div>
+      <div class="chip" onclick="useChip(this)">Which studios and Ampera are both in contact with the same clients?</div>
+      <div class="chip" onclick="useChip(this)">Which clients are being pursued by 3 or more studios?</div>
+    </div>`;
+  msgs.appendChild(welcome);
   qInput.focus();
 }
 
