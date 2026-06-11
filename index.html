@@ -504,10 +504,11 @@ kbd {
       <svg viewBox="0 0 16 16"><path d="M2 4h5v8H2zM9 4h5v4H9zM9 10h5v2H9z"/></svg>
     </div>
     <h2>BD Intelligence</h2>
-    <p>Studio Network · Confidential<br>Enter your access password to continue.</p>
-    <input class="login-input" type="password" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <p>Studio Network · Confidential<br>Enter your name and password to continue.</p>
+    <input class="login-input" type="text" id="nameInput" placeholder="Your name" onkeydown="if(event.key==='Enter')document.getElementById('pwInput').focus()" autocomplete="off">
+    <input class="login-input" type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="off">
     <button class="login-btn" onclick="doLogin()">Access</button>
-    <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
+    <div class="login-error" id="loginError">Incorrect name or password. Please try again.</div>
   </div>
 </div>
 
@@ -645,22 +646,23 @@ let currentUser = '';
 
 // ── Passwords ─────────────────────────────────
 const PASSWORDS = {
-  'Mango#7x2K': 'Claude',
-  'Tiger#4p9W': 'Luc',
-  'Storm#3q8R': 'Max',
-  'Pixel#6m1T': 'Kerry',
-  'Comet#5n4V': 'Johnny',
-  'Blaze#2w7Y': 'JB',
-  'Lunar#9k3P': 'Tina',
+  'Claude': 'Mango#7x2K',
+  'Luc':    'Tiger#4p9W',
+  'Max':    'Storm#3q8R',
+  'Kerry':  'Pixel#6m1T',
+  'Johnny': 'Comet#5n4V',
+  'JB':     'Blaze#2w7Y',
+  'Tina':   'Lunar#9k3P',
 };
 
 function doLogin() {
+  const name = document.getElementById('nameInput').value.trim();
   const pw = document.getElementById('pwInput').value.trim();
-  const user = PASSWORDS[pw];
-  if (user) {
-    currentUser = user;
+  const expected = PASSWORDS[name];
+  if (expected && expected === pw) {
+    currentUser = name;
     document.getElementById('loginPage').style.display = 'none';
-    document.getElementById('userBadge').textContent = `● ${user}`;
+    document.getElementById('userBadge').textContent = `● ${name}`;
   } else {
     document.getElementById('loginError').style.display = 'block';
     document.getElementById('pwInput').value = '';
