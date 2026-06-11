@@ -487,6 +487,7 @@ kbd {
   cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; text-align: left; line-height: 1.4;
 }
 .followup-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.followup-chip.selected { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); opacity: 0.6; cursor: default; }
 
 @media (max-width: 720px) {  .main { grid-template-columns: 1fr; }
   .sidebar { max-height: 200px; }
@@ -617,10 +618,10 @@ kbd {
         <h2>Ask across your studio network</h2>
         <p>BD reports from Vertic, Winking GDG, Winking Nanjing, Ampera NA, OPC, Mineloader, and BIG (Jocelyn) are loaded and ready to query.</p>
         <div class="chips">
-          <div class="chip" onclick="useChip(this)">Which studios have overlapping clients with Vertic?</div>
-          <div class="chip" onclick="useChip(this)">Where do BIG and NA BD (Ampera/Luc) have overlapping clients?</div>
-          <div class="chip" onclick="useChip(this)">Which studios and Ampera are both in contact with the same clients?</div>
-          <div class="chip" onclick="useChip(this)">Which clients are being pursued by 3 or more studios?</div>
+          <div class="chip" onclick="useChip(this)">Vertic与NA BD (Ampera/Luc)有哪些重叠客户？</div>
+          <div class="chip" onclick="useChip(this)">Mineloader与BIG有哪些重叠客户？</div>
+          <div class="chip" onclick="useChip(this)">OPC与NA BD (Ampera/Luc)有哪些重叠客户？</div>
+          <div class="chip" onclick="useChip(this)">Winking Nanjing与BIG有哪些重叠客户？</div>
         </div>
       </div>
     </div>
@@ -671,22 +672,23 @@ function doLogin() {
 }
 
 // ── Follow-up question suggestions ────────────
+// Each chip is a 2-studio comparison — faster and more focused
 const FOLLOWUP_CHIPS = [
-  'Which studios have overlapping clients with Vertic?',
-  'Which studios have overlapping clients with Mineloader?',
-  'Which studios have overlapping clients with OPC?',
-  'Which studios have overlapping clients with Winking Nanjing?',
-  'Where do BIG and the NA BD (Ampera/Luc) team have overlapping clients?',
-  'Which studios are both in contact with Riot Games?',
-  'Which studios are both in contact with Bungie?',
-  'Which studios are both in contact with Sucker Punch?',
-  'Which studios are both in contact with Gearbox?',
-  'Which studios are both in contact with Epic Games?',
-  'Which clients are being pursued by 3 or more studios simultaneously?',
-  'Which studios and Ampera are both in contact with the same clients?',
-  'Where do Vertic and Ampera have overlapping client contacts?',
-  'Where do Mineloader and BIG have overlapping client contacts?',
-  'Which clients have NDA signed across multiple studios?',
+  'Vertic与NA BD (Ampera/Luc)有哪些重叠客户？',
+  'Vertic与BIG有哪些重叠客户？',
+  'Mineloader与NA BD (Ampera/Luc)有哪些重叠客户？',
+  'Mineloader与BIG有哪些重叠客户？',
+  'OPC与NA BD (Ampera/Luc)有哪些重叠客户？',
+  'OPC与BIG有哪些重叠客户？',
+  'Winking Nanjing与NA BD (Ampera/Luc)有哪些重叠客户？',
+  'Winking Nanjing与BIG有哪些重叠客户？',
+  'Which studios overlap with NA BD on Riot Games?',
+  'Which studios overlap with NA BD on Bungie?',
+  'Which studios overlap with NA BD on Gearbox?',
+  'Which studios overlap with BIG on Riot Games?',
+  'Which studios overlap with BIG on Gearbox?',
+  'Vertic and NA BD — which clients are they both pursuing?',
+  'Mineloader and BIG — which clients are they both in contact with?',
 ];
 
 function getFollowupChips() {
@@ -1367,6 +1369,9 @@ function addMsg(role, text) {
       chip.className = 'followup-chip';
       chip.textContent = q;
       chip.onclick = () => {
+        // Mark as selected but keep all chips visible
+        chipRow.querySelectorAll('.followup-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
         qInput.value = q;
         qInput.dispatchEvent(new Event('input'));
         sendQuestion();
@@ -1421,10 +1426,10 @@ function startNewConvo() {
     <h2>Ask across your studio network</h2>
     <p>BD reports from Vertic, Winking GDG, Winking Nanjing, Ampera NA, OPC, Mineloader, and BIG (Jocelyn) are loaded and ready to query.</p>
     <div class="chips">
-      <div class="chip" onclick="useChip(this)">Which studios have overlapping clients with Vertic?</div>
-      <div class="chip" onclick="useChip(this)">Where do BIG and NA BD (Ampera/Luc) have overlapping clients?</div>
-      <div class="chip" onclick="useChip(this)">Which studios and Ampera are both in contact with the same clients?</div>
-      <div class="chip" onclick="useChip(this)">Which clients are being pursued by 3 or more studios?</div>
+      <div class="chip" onclick="useChip(this)">Vertic与NA BD (Ampera/Luc)有哪些重叠客户？</div>
+      <div class="chip" onclick="useChip(this)">Mineloader与BIG有哪些重叠客户？</div>
+      <div class="chip" onclick="useChip(this)">OPC与NA BD (Ampera/Luc)有哪些重叠客户？</div>
+      <div class="chip" onclick="useChip(this)">Winking Nanjing与BIG有哪些重叠客户？</div>
     </div>`;
   msgs.appendChild(welcome);
   qInput.focus();
