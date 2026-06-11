@@ -1194,7 +1194,7 @@ qInput.addEventListener('input', () => {
   qInput.style.height = Math.min(qInput.scrollHeight, 110) + 'px';
 });
 qInput.addEventListener('keydown', e => {
-  if (e.shiftKey && e.key === 'Enter') { e.preventDefault(); sendQuestion(); }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendQuestion(); }
 });
 
 function useChip(el) {
@@ -1288,7 +1288,7 @@ function startNewConvo() {
 
 // ── Claude API ────────────────────────────────
 async function callClaude() {
-  const resp = await fetch('https://withered-bar-139a.liziting2023.workers.dev', {
+  const resp = await fetch('https://bd-intel-proxy.liziting2023.workers.dev', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
