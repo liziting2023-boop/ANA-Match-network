@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BD Intelligence · Studio Network</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:        #f5f6f8;
+  --surface:   #ffffff;
+  --surface2:  #f0f1f4;
+  --border:    #e2e4ea;
+  --border2:   #cdd0db;
+  --ink:       #111318;
+  --ink-mid:   #4a4f63;
+  --ink-dim:   #8a8fa8;
+  --accent:    #2253f5;
+  --accent-bg: #eef1ff;
+  --accent2:   #7c3aed;
+  --green:     #14a355;
+  --green-bg:  #edfaf3;
+  --amber:     #c47f0a;
+  --amber-bg:  #fef9ec;
+  --red:       #dc2626;
+  --radius:    10px;
+  --shadow:    0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mark {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-mark svg { width: 14px; height: 14px; fill: white; }
+
+.logo-text {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+}
+
+.logo-text span { font-weight: 400; color: var(--ink-dim); }
+
+.header-right { display: flex; align-items: center; gap: 10px; }
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12px;
+  color: var(--ink-dim);
+  font-weight: 500;
+}
+
+.pill-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 2px var(--green-bg);
+}
+
+.new-convo-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--ink-mid);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.new-convo-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+.main {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  flex: 1;
+  min-height: calc(100vh - 56px);
+}
+
+/* Sidebar */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-block {
+  padding: 18px 18px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.block-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 12px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.stat-tile {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.stat-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.stat-label { font-size: 11px; color: var(--ink-dim); margin-top: 3px; }
+
+.file-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.file-list::-webkit-scrollbar { width: 4px; }
+.file-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  transition: all 0.13s;
+}
+
+.file-row.active {
+  background: var(--green-bg);
+  border-color: rgba(20, 163, 85, 0.2);
+}
+
+.file-type-badge {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.file-type-badge.pdf { background: #fef2f2; color: #dc2626; }
+.file-type-badge.docx { background: #eff6ff; color: #2563eb; }
+.file-type-badge.txt { background: #f5f3ff; color: #7c3aed; }
+
+.file-info { flex: 1; min-width: 0; }
+
+.file-name {
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+}
+
+.file-meta { font-size: 11px; color: var(--green); margin-top: 1px; }
+
+/* Chat */
+.chat-pane { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.messages::-webkit-scrollbar { width: 5px; }
+.messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.welcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+  padding: 40px;
+  min-height: 300px;
+}
+
+.welcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--accent-bg);
+  border: 1px solid rgba(34,83,245,0.18);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.welcome h2 {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.welcome p { font-size: 14.5px; color: var(--ink-mid); max-width: 420px; line-height: 1.65; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 6px; }
+
+.chip {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--ink-mid);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+.msg-wrap { display: flex; gap: 12px; align-items: flex-start; }
+.msg-wrap.user { flex-direction: row-reverse; align-self: flex-end; }
+
+.avatar {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.msg-wrap.user .avatar { background: var(--ink); color: white; font-weight: 600; font-size: 11px; }
+.msg-wrap.ai .avatar { background: var(--accent-bg); border: 1px solid rgba(34,83,245,0.2); font-size: 14px; }
+
+.bubble {
+  padding: 13px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 620px;
+}
+
+.msg-wrap.user .bubble {
+  background: var(--ink);
+  color: #f0f1f4;
+  border-radius: 12px 2px 12px 12px;
+}
+
+.msg-wrap.ai .bubble {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  border-radius: 2px 12px 12px 12px;
+  box-shadow: var(--shadow);
+}
+
+.bubble p { margin-bottom: 10px; }
+.bubble p:last-child { margin-bottom: 0; }
+.bubble strong { color: var(--accent2); font-weight: 600; }
+.bubble ul { padding-left: 18px; margin: 8px 0; }
+.bubble li { margin-bottom: 5px; color: var(--ink-mid); }
+
+.typing-bubble {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 2px 12px 12px 12px;
+  box-shadow: var(--shadow);
+  width: fit-content;
+}
+
+.t-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); animation: tdot 1.3s ease-in-out infinite; }
+.t-dot:nth-child(2) { animation-delay: 0.18s; }
+.t-dot:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes tdot {
+  0%, 60%, 100% { transform: translateY(0); background: var(--border2); }
+  30% { transform: translateY(-5px); background: var(--accent); }
+}
+
+.history-reset {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-dim);
+  font-size: 11.5px;
+  margin: 4px 0;
+}
+.history-reset::before, .history-reset::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Input */
+.input-bar {
+  border-top: 1px solid var(--border);
+  padding: 14px 24px 18px;
+  background: var(--surface);
+}
+
+.input-box {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  background: var(--bg);
+  border: 1.5px solid var(--border2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.input-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(34,83,245,0.08);
+  background: var(--surface);
+}
+
+#qInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--ink);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  resize: none;
+  min-height: 22px;
+  max-height: 110px;
+  line-height: 1.5;
+}
+
+#qInput::placeholder { color: var(--ink-dim); }
+
+.send-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: flex-end;
+  transition: all 0.15s;
+}
+.send-btn:hover { background: #1a42d4; }
+.send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.send-btn svg { width: 15px; height: 15px; stroke: white; fill: none; }
+
+.input-hint { font-size: 11.5px; color: var(--ink-dim); margin-top: 8px; text-align: center; }
+
+kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  font-size: 10.5px;
+  font-family: 'DM Mono', monospace;
+  color: var(--ink-mid);
+}
+
+@media (max-width: 720px) {
+  .main { grid-template-columns: 1fr; }
+  .sidebar { max-height: 200px; }
+  .messages { padding: 18px 16px; }
+  .input-bar { padding: 12px 14px 16px; }
+  header { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 16 16"><path d="M2 4h5v8H2zM9 4h5v4H9zM9 10h5v2H9z"/></svg>
+    </div>
+    <div class="logo-text">BD Intelligence <span>· Studio Network</span></div>
+  </div>
+  <div class="header-right">
+    <button class="new-convo-btn" onclick="startNewConvo()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+      New conversation
+    </button>
+    <div class="pill">
+      <div class="pill-dot"></div>
+      <span>6 studios loaded</span>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-block">
+      <div class="block-label">Documents loaded</div>
+      <div class="stats-grid">
+        <div class="stat-tile">
+          <div class="stat-num">6</div>
+          <div class="stat-label">Studio files</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num">7</div>
+          <div class="stat-label">Total docs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="file-list">
+      <div class="file-row active">
+        <div class="file-type-badge pdf">PDF</div>
+        <div class="file-info">
+          <div class="file-name">Vertic Studios</div>
+          <div class="file-meta">✓ Ready</div>
+        </div>
+      </div>
+      <div class="file-row active">
+        <div class="file-type-badge txt">TXT</div>
+        <div class="file-info">
+          <div class="file-name">Winking GDG</div>
+          <div class="file-meta">✓ Ready</div>
+        </div>
+      </div>
+      <div class="file-row active">
+        <div class="file-type-badge pdf">PDF</div>
+        <div class="file-info">
+          <div class="file-name">Winking Nanjing (Francis)</div>
+          <div class="file-meta">✓ Ready</div>
+        </div>
+      </div>
+      <div class="file-row active">
+        <div class="file-type-badge pdf">PDF</div>
+        <div class="file-info">
+          <div class="file-name">Winking Nanjing (Ridda)</div>
+          <div class="file-meta">✓ Ready</div>
+        </div>
+      </div>
+      <div class="file-row active">
+        <div class="file-type-badge docx">DOC</div>
+        <div class="file-info">
+          <div class="file-name">NA BD (Ampera/Luc)</div>
+          <div class="file-meta">✓ Ready</div>
+        </div>
+      </div>
+      <div class="file-row active">
+        <div class="file-type-badge docx">DOC</div>
+        <div class="file-info">
+          <div class="file-name">OPC BD Status</div>
+          <div class="file-meta">✓ Ready</div>
+        </div>
+      </div>
+      <div class="file-row active">
+        <div class="file-type-badge pdf">PDF</div>
+        <div class="file-info">
+          <div class="file-name">Mineloader Studios</div>
+          <div class="file-meta">✓ Ready</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-pane">
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcomeScreen">
+        <div class="welcome-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><circle cx="12" cy="12" r="12"/></svg>
+          7 documents ready
+        </div>
+        <h2>Ask across your studio network</h2>
+        <p>BD reports from Vertic, Winking GDG, Winking Nanjing, Ampera NA, OPC, and Mineloader are loaded and ready to query.</p>
+        <div class="chips">
+          <div class="chip" onclick="useChip(this)">Which studios have active ongoing projects?</div>
+          <div class="chip" onclick="useChip(this)">Compare each studio's key client focus</div>
+          <div class="chip" onclick="useChip(this)">Where are cross-studio collaboration opportunities?</div>
+          <div class="chip" onclick="useChip(this)">Which clients are in discussion but not yet confirmed?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-bar">
+      <div class="input-box">
+        <textarea id="qInput" placeholder="Ask anything about the studios' BD status…" rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendQuestion()">
+          <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="input-hint"><kbd>Shift</kbd> + <kbd>Enter</kbd> to send &nbsp;·&nbsp; <kbd>Enter</kbd> for new line</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let chatHistory = [];
+let busy = false;
+
+// ── All studio content hard-coded ──────────────
+const DOCUMENTS = [
+  {
+    name: "Vertic Studios BD Report",
+    content: `VERTIC STUDIOS – BD STATUS
+
+ACTIVE / ON-GOING CLIENTS:
+Scopely:
+- MSF (Marvel Strike Force): on-going — 3D characters, Splash Screen, UI
+- STFC (Star Trek Fleet Command): on-going — Concept environment, UI, Splash Screen, 3D Ship
+- Monopoly GO!: in discussion
+- Bingo Bash: in discussion
+
+Smile Break:
+- Electrum: on-going — 3D Ship, 3D Environment, UI
+
+DIGIC PICTURES:
+- TAKO: on-going — Animation
+
+Turtle Rock Studios:
+- B4B (Back 4 Blood): on-going — 3D character test, in discussion on concept
+
+Magic Soup:
+- Goldie: on-going — Concept, Potential full pipeline
+
+Keen Games:
+- Ensh: on-going — Character concept, Character 3D
+
+ZeniMax Online:
+- ESO (Elder Scrolls Online): on-going — 2D Monster, 3D weapon set starting in August
+
+DISCUSSIONS / PIPELINE:
+Naughty Dog: In discussion on concept work and animation work. Direct contact with Erick.
+Sucker Punch: In discussion with Bryce on their new development project. Updating portfolio and resources. Previously worked on Ghost of Yōtei. Also in contact with Sonia on concept, 3D and animation.
+Worldscape AI: NDA signed. In discussion on 3D vehicle work, very actively.
+ILM: NDA signed. In discussion on 2D/3D character and animation work. Very actively.
+Theorycraft: Previously worked on SUPERVIVE. Currently in discussion on their next project.
+Firaxis: NDA signed. On-going discussion, nothing solid yet. Introduced by Ben.
+Xbox Game Studios: In contact with Esteban and Adrien. Presented MAYA (MAG) project. Nothing solid.
+Invoke Studios: In contact with Vincent (met at past two GDC). Sent portfolio and resources plan.
+Mob Entertainment: In discussion with Mike Anaya. Next meetup at XDS.
+Sharkmob: Met Erik (AD) at Sharkmob office in Malmo. Nothing solid but in discussion.
+Absurd Ventures: In contact with Rob (ex-Insomniac, Theorycraft). Nothing solid.
+Bad Robot Games: In contact with Chris. Nothing solid.
+Behavior Interactive: In contact with Peter. Vendor form pending. Know Amelie Meunier (ex-Ubisoft), no active project.
+Massive Entertainment: In contact with Victoria Polyak. Nothing solid.
+Flying Wild Hog: In close contact. Kevin met Marcin at Digital Dragon. Active discussion.
+Techland EP: Kevin met Stan at Digital Dragon. NDA signed, active conversation.
+Mroya Studio: Kevin met Kiryl at Digital Dragon. Active conversation.
+Devheart Games: Kevin met Michal at Digital Dragon. 3D character works. Active conversation.
+One More Level: Kevin met Jan at Digital Dragon. Sent deck, active conversation.
+Reddeer Games: Kevin met Michal Maciej at Digital Dragon. Waiting for NDA to be signed.
+
+CONTACTS / NO ACTIVE PROJECT:
+Riot: Know Jackie Chow (Senior Game Producer), Brandon (VFX Art Manager), Renauld Galand (Character AD). No active project.
+Gearbox: Know Jesse (via BIG connection). No active project.
+Bungie: Know Anthony Buell. No active project.
+Insomniac (Sony PS): Know Brian Moore. Worked on Ratchet & Clank, Marvel's Spider-Man, Marvel's Wolverine. In close contact, no active project.
+Epic Games: Multiple meetings with Stephanie Arnett. No active project.
+Activision: Multiple meetings with Stephanie Arnett. No active project. Previously quoted on environment work (not greenlit).
+Ubisoft: Met Clair Pourchez in Montreal 3 years ago. In connection, no active project.
+
+NO CONTACT:
+Crea-ture, BKOM, ArenaNet, BioWare, Gun Interactive, Aspyr, Yellow Brick Games, The Pokemon Company, Guerrilla Games, Respawn, Full Circle, Gameloft, King, Avalanche, Rogue Factor`
+  },
+  {
+    name: "Winking GDG – European & North American Collaboration Cases",
+    content: `WINKING GDG – EU/NA COLLABORATION CASES
+
+1. GOA / Gods of Asgard
+Timeline: April 2022
+Lead Source: Inbound email at biz@winkingworks.com
+Scope: Combat mechanics, animation, VFX, and environment upgrades
+Team: 2 artists + 1 PM
+Fee: No records available
+Positioning: Art asset production combined with in-engine implementation and tuning support
+
+2. TLM Partners
+Timeline: May–June 2022
+Scope: Porting a VR title to PICO/VR headset environment, Unreal Engine upgrade and technical fixes
+Team: ~4 weeks, 3 programmers, ~35 person-days
+Fee: ~NT$280,000
+Rates: Lead Programmer NT$8,900/day; Programmer NT$7,600/day
+Positioning: Short-term technical support, VR porting, UE upgrade, platform support
+
+3. Impact Theory / Project Kyzen
+Timeline: October 2022 to present
+Lead Source: Introduced by CTO of Gamania
+Scope: Performance optimization, clipping fixes, Unreal project support, long-term co-development
+Scale: 15+ developers, 2+ years, 5+ countries, 12+ time zones
+Fee: Total billings exceeded US$2M
+Rates: Lead Programmer US$450/day; General UE Programmer/PM/Artist US$400/day
+Positioning: Large-scale EU/NA client, long-term Unreal co-development, cross-timezone multi-team collaboration`
+  },
+  {
+    name: "Winking Nanjing BD – Francis",
+    content: `WINKING NANJING BD – FRANCIS
+
+Current collaborations and potential opportunities:
+
+Plarium (from Chris Gibson):
+- Collaborating for over a year. Since Feb 2025, producing VFX for their game Raid.
+
+Riot (from BIG):
+- Deep collaboration on 2XKO: 3D rigging, 2D hand-drawn characters, 3D character models, 3D animation, stickers.
+- Feb 2025: experienced 30-40% workload reduction due to mixed market reception for 2XKO.
+
+Riot Shanghai (from BIG):
+- Completed InfoSec audit. Jocelyn following up with Shanghai-based lead to explore opportunities for new R&D project via outsourcing.
+
+Candy Valley Network (from 2024 TGS referral/BIG):
+- 2A-level German client. Partnership began late 2024. Delivered extensive 3D modeling assets.
+- Jocelyn visited them in Germany ahead of Digital Dragons. Ongoing outsource requirements expected.
+
+Glowstick (from BIG, referral from Daruma):
+- Discussing environment remake for their horror game. Two meetings held. Communication slow but actively following up.
+
+Riot Riftbound project (from Ampera):
+- Participated in 2D concept art test. Initial feedback not as positive as hoped. Waiting for updates from Ampera team.
+
+BKOM (from Ampera):
+- Discussions began March after introduction from Ampera. Working on animation project, estimate submitted. Waiting for progress from Ampera and BKOM.
+
+GIANT (from BIG):
+- Collaborated in 2024: animal ANI for Farming Simulator. Recently reached out for new opportunities but unable to agree due to project timeline and rate misalignment.
+
+Playtalent (from BIG):
+- Completed multi-pipeline art test for card game (2D characters + UI). Awaiting client feedback on next steps.
+
+Kingart (from BIG):
+- Referral from Candy Valley network. Looking for VFX outsource for Warhammer game. Still following up, preparing meeting with producer.
+
+Seeker Entertainment (from Francis):
+- First contacted at GDC 2025. Seeking co-dev partner for 1000+ days of work. Next steps on hold due to funding issues.`
+  },
+  {
+    name: "Winking Nanjing BD – Ridda",
+    content: `WINKING NANJING BD – RIDDA
+
+Current clients and opportunities:
+
+Razer Singapore:
+- POC: Anna Kuzmenko, AI Business Development & Partnerships Manager
+- AVA (AI companion): Character design for Gamescom 2026. May need more skins depending on test quality.
+
+WeirdCo:
+- POC: Jonny Erner, Creative Director (ex-Second Dinner, card game co. founded by Ben Brode ex-Hearthstone/Blizzard)
+- Winking has been doing card art for Second Dinner's Marvel SNAP since 2024.
+- Cyberpunk TCG: trying to lock a test. Card art for second set based on Cyberpunk Edgerunners anime.
+
+Second Dinner:
+- POC: Karina Zhou, Associate Art Outsource Supervisor
+- Marvel SNAP: card art in production.
+
+Tweaking Cats Studios:
+- POC: Roland Herran, Art Director
+- Early in development, no immediate outsourcing needs. Will reach out when ready.
+
+Ubisoft: Confidential per client's request (including Massive).
+
+EA: Confidential per client's request. Respawn part needs another private meeting with Ampera.
+
+Bungie:
+- POC: Hans Leopold, Anthony Buell
+- Destiny 2: Game is ending. Waiting for new opportunities.
+
+Riot:
+- POC: Kat Verbii, Senior Game Producer
+- TFT (Confidential): VFX in production.
+
+Supersaurus:
+- POC: Garret Martini, CEO
+- Punch Upon a Time: Animation production in 2025. Game releasing soon.
+
+Activision Shanghai:
+- POC: Sharon Zhao, Project Manager
+- COD series production.
+
+No Collaboration (confirmed): Crea-ture, BKOM, ArenaNet, BioWare, Gun Interactive, Turtle Rock, Aspyr, Yellow Brick Games, Invoke, The Pokemon Company, Guerrilla Games, Full Circle, Sony PlayStation Third-Party Team, Scopely, Avalanche, Sharkmob, Epic, Gearbox, Gameloft, King, Rogue Factor, Nacon`
+  },
+  {
+    name: "NA BD – Ampera / Luc",
+    content: `NA BD – AMPERA / LUC
+
+CURRENT NEGOTIATIONS LED BY LUC:
+
+Riot:
+- Card test successful, starting first batch (Set 8) this week.
+- Luc met with Steve in LA. Expects reduced vendor list for Set 9 → more card assignments.
+- Interest in marketing and special-event cards.
+- In contact with Diego in Singapore. Riot expects new RFP in Q3, wants to test Ampera/Winking structure.
+
+Crea-ture:
+- Although a Nacon studio, supporting their in-game 2D cinematics. Very happy with our work.
+
+BKOM:
+- Luc previously worked at BKOM. Strong relationships.
+- Setting up external art management. Planning animation work on Pathfinder. Will work with us once new art manager onboarded.
+
+ArenaNet:
+- Full-time UI/UX retainer in place.
+- Discussing with Jiyoung to move concept art to Ampera. Former Volta concept artists ready to transition.
+
+BioWare:
+- One full-time concept artist assigned.
+- Discussions with JC for additional concept art and 3D character/environment support.
+- Expect more work as BioWare ramps up production.
+
+Gun Interactive:
+- Discussing production of their next game. Pitched concept led by Micah (new head of design). Very well received.
+- Opportunity: full-development project ~$4–5M USD. Luc in regular contact with Ishmael (Executive Producer). Positive for Q4.
+
+Gearbox:
+- Luc discussing with Brian Burleson on Winking taking over portions of character production pipeline. Current multi-vendor process is inefficient.
+
+Turtle Rock:
+- Reached out about NA concept art team to accelerate production. Mark has received portfolio, expected to revert shortly.
+
+Bungie:
+- Test started for Marathon marketing and store assets. Test progressing well.
+- Luc met with Paul Wu in Austin. Presented Ampera/Winking structure. Significant interest.
+
+Aspyr:
+- Luc met with Ryan and Ted in Austin. Eager to work with us.
+- Two active RFPs: Deus Ex remake (~$20M USD, submitted) and Star Wars: The Force Unleashed remaster (>$10M USD). Strong chances of winning at least one.
+
+Yellow Brick Games:
+- Luc in regular contact with Jeff and Thomas. Art support expected starting September. Not renewing current vendor.
+
+Invoke:
+- Luc in regular contact with Vincent. Art support expected starting September after D&D vertical slice greenlight.
+
+The Pokemon Company:
+- Invited to submit 2D illustration portfolio for card illustration test. Portfolio strong enough to qualify.
+- Could expand to 3D production and co-development, potentially leading to broader Winking Global relationship.
+
+Guerrilla Games:
+- Luc met with Per Erik (Animation Supervisor). Seeking animation partner for Horizon Hunter Gathering. Up to 60 animators needed.
+- Positive to Ampera-led model with Winking scalable production. Next step: engage Diana Torrejon, production test.
+
+Respawn:
+- Luc met with Eric Barrios in LA. Following through on graphic design work for Apex Legends.
+- Seeking Asian animation partner. Visiting China in July — will visit Nanjing studio.
+
+Full Circle:
+- Luc met with Rikki in Austin. Fully supportive. Synergy through Claude's XDS Advisory Board involvement. Content support expected starting September.
+
+Sony PlayStation Third-Party Team:
+- Luc met with David Thach's team in LA. Reviewing dormant Sony IPs. Will pitch several concepts. Micah reviewing list.
+
+Scopely:
+- Luc met with JC (Mika's manager) in LA. Interest in Winking Group rate card. Mika finalizing process before paternity leave.
+
+Avalanche, Sharkmob, Ubisoft, Massive:
+- Met representatives at Nordic Game. No immediate opportunities. Strong interest in Winking/Ampera structure, especially from Laurent Lugbull. He will visit Nanjing studio.
+
+Epic Games:
+- Multiple discussions with Adam Saransohn, Phil, Ben (Epic external dev team). Team being reorganized post-layoffs. Meeting again at Unreal Fest.
+
+Activision:
+- Met Sophie and external dev team in LA. No active opportunities. Highly price driven. Maintaining relationship.
+
+Additional ongoing discussions: Gameloft, King.
+
+PLAN FOR MAX (new hire):
+- LinkedIn outreach targeting mid-sized and large NA developers/publishers.
+- Goal: immediate portfolio requests, discovery calls, RFP opportunities.
+- U.S. roadshow planned: California, Seattle, New York, or other based on demand.
+
+Pre-Gamescom (July/Early August): Focused U.S. roadshow.
+Four weeks before Gamescom: Second outreach campaign for Gamescom meetings.
+
+SPECIFIC ACTIONS:
+- Final portfolio review for Dave with Claude and Art Directors.
+- Meet Yellow Brick Games re: Switch 2 port at reduced cost.
+
+TRAVEL PLAN:
+- Next week: Luc + Claude in Montreal, meet local clients, visit Rogue Factor re: Deus Ex.
+- June: Unreal Fest (Kerry and Luc)
+- July: Develop: Brighton + XDS Ignite
+- August: Gamescom
+- September: XDS, Tokyo Game Show, THU (Claude invited as speaker)
+- Year-end: Seattle trip + additional client visits`
+  },
+  {
+    name: "OPC BD Status",    content: `OPC CURRENT BUSINESS DEVELOPMENT STATUS
+(For Ampera & North America Business Team Only)
+
+ACTIVE CLIENTS:
+
+Pocket Gems:
+- Long-term stable partnership. Ongoing art production support.
+- Client responds positively to quality and collaboration. Work volume stable.
+- Exploring opportunities to expand scope and increase production volume.
+
+Sledgehammer Games (Activision – overlaps with Luc):
+- Strong working relationship. Current 2D art production in full production, expected to continue through end of 2027.
+- Positive client feedback on quality and delivery. Scale of collaboration growing steadily.
+- 3D team recently began test opportunities. Hope to expand across characters, weapons, vehicles, environment.
+
+Treyarch (Activision – overlaps with Luc):
+- Active partnership. 2D art production expected to continue through August 2026.
+- Client satisfied with quality. Discussions on future opportunities ongoing.
+- Next project phase expected 2027. Seeking to expand and secure long-term production opportunities.
+
+Electronic Arts (Confidential per client request):
+- Through Group BD team and EA Shanghai: supporting 2D concept art production.
+- Client satisfied with quality and responsiveness. Demand increasing steadily.
+- Engaging team, hoping to expand into additional Battlefield-related content and other EA projects.
+
+CAPCOM:
+- Working relationship with CAPCOM Taiwan. Maintaining communication with contacts.
+- Recent introductions to Japan production teams through management-level referrals.
+- Hoping to leverage collaboration and internal recommendations to secure future test and production work with CAPCOM Japan.
+
+POTENTIAL OPPORTUNITIES:
+
+Sony Interactive Entertainment / Sucker Punch Productions:
+- OPC passed Sucker Punch vendor evaluation ~3 years ago. Maintained contact since.
+- Currently undergoing vendor renewal and qualification review. Hope to participate in future project evaluations.
+
+Gearbox Entertainment:
+- Previously participated in art test. Evaluation completed, no additional feedback or projects yet.
+- Monitoring future opportunities and maintaining communication.
+
+2K / Visual Concepts (overlaps with Luc):
+- Previously contributed art production for LEGO 2K Drive.
+- Connected with 2K HQ contacts. No new opportunities due to organizational restructuring and team reductions.
+
+EA Expansion: Hoping to expand beyond current Battlefield collaboration into additional EA projects.
+
+HTC / AR & VR Opportunities: Exploring with HTC and tech partners in AR, VR, simulation, and training applications.
+
+Activision Blizzard Expansion: Beyond Treyarch and Sledgehammer, hoping to expand into other Activision studios.
+
+HISTORICAL CLIENTS:
+Oxide Games (Ara: History Untold, 2D Concept Art), Endeavor One (Arashi, Dome of the Dead, VR dev), Directive Games (3D character, AA-scale multiplayer), NetEnt (Slot Game casino art), Riot Games Shanghai (marketing/promotional art), Daybreak Game Company (2D art), FunPlus (mobile game art), Warner Bros. Games (AAA art test), Uber Entertainment / Star Theory Games (game dev support).
+
+BD EVENTS & MARKET DEVELOPMENT:
+XDS, Tokyo Game Show, Taipei Game Show, Game Developers Summit Philippines, client visits and business matchmaking, GDC, Gamescom.
+
+BD FOCUS – H2 2026:
+- Strengthen relationships: Sledgehammer Games, Treyarch, EA, Sony
+- Expand 2D and 3D production for Sledgehammer Games
+- Expand with CAPCOM Japan
+- Expand into AR/VR, simulation, defense training markets
+- Grow in Casino Gaming, Live Service, Adult-Oriented Content
+- New business across North America and Japan
+
+CHALLENGES (requesting support):
+- 2K: Good long-term contact with Jean-Marc, 2-3 years history on one IP. But no new projects secured yet. Would appreciate Ampera's help exploring opportunities.
+- Zynga: Confident in supporting casino/slot art needs but limited engagement from current contact. Would appreciate Ampera's help facilitating discussions.
+- Riot: Previously collaborated with Riot Shanghai team, communication stopped. Would like to reconnect and explore opportunities with other Riot teams. Requesting Ampera introductions.
+
+COMPANIES NOT YET ENGAGED BY OPC:
+Nacon, Scopely, Ubisoft, Epic Games, Rogue Factor, Crea-ture, BKOM, ArenaNet, BioWare, Gun Interactive, Turtle Rock Studios, Bungie, Aspyr, Yellow Brick Games, Invoke Studios, The Pokémon Company, Guerrilla Games, Respawn Entertainment, Full Circle, Sony PlayStation Third-Party Team, Avalanche Studios Group, Sharkmob, Massive Entertainment, Gameloft, King`
+  },
+  {
+    name: "Mineloader Studios BD Status",
+    content: `MINELOADER STUDIOS – BD STATUS
+
+ACTIVE / ON-GOING CLIENTS:
+
+UBISOFT Massive: Confidential per client's request. Details available in one-on-one conversation.
+
+EA: Confidential per client's request. Details available in one-on-one conversation.
+
+EPIC: Discussing possibility of participating in two of their new co-dev projects.
+
+Visual Concepts (2K):
+- WWE2K26: currently working on DLC content.
+- WWE2K27: currently working on Character of main game content.
+- Outsourcing Manager Alicia and team very happy with delivery quality and schedule management.
+- May also help with Environment and Animation works in the future.
+
+Gearbox:
+- Helping with character works for Borderlands 4. Still working on more characters until August.
+- Details available in one-on-one conversation.
+
+Experiment 101 AB:
+- Helping with character production for 1+ year for their new stylized title.
+- Likely to continue for rest of year.
+- Client promises Hard Surface and Environment work to follow.
+- Very happy with deliveries.
+
+Qloud Games:
+- Australian studio working on casual socializing online game LOFTIA (connected through Mic).
+- Helping with Concept, 3D Character, 3D Environment and Prop production.
+- Still updating game content but work scope largely reduced.
+
+Wombo Games:
+- Founder is a good friend of Mineloader. Title: Raiders of Blackveil.
+- Supporting Concept, Keyart, 3D Environment and Prop, Engine work, QA, Testing.
+- Still working on QA and testing. Seeking publisher to sell game in Asian market.
+
+Immutable:
+- Co-Dev partnership on Guild of Guardians: game development and live-op support.
+- Scope: Concept, Modeling, Animation, TA, Game Design, Engineering.
+- Still working, possibly through end of year.
+
+PIPELINE / DISCUSSIONS:
+
+Zephyr Studios:
+- Newly established developer founded by Williams. Seeking partner for vertical slice of first game.
+- Studio head has limited game dev/outsourcing knowledge.
+- Trying to establish a company in China in June.
+
+Sucker Punch:
+- Did animation test earlier this year. Possibly some modeling work to send later.
+
+Naughty Dog:
+- AD Erick has been in contact for years, meets Mineloader every year.
+- Mentioned more opportunities possible next year.
+
+Bungie:
+- Contact is a personal friend of Mineloader.
+- Marathon is a stylized game — team very careful picking art vendors.
+- Modeling test planned for Mineloader in second half of 2026.
+- Previously worked with Paul Wu but not with Bungie formally yet.
+- Details available in one-on-one conversation.
+
+Full Circle Studio:
+- Connected for 3+ years. Skateboarding game is stylized, could use Mineloader help later.
+- Details available in one-on-one conversation.
+
+Retro Games:
+- Maintaining contact with outsourcing manager since last cooperation.
+- Told there could be opportunity to work again next year.
+
+Raw Power Games:
+- Senior Producer is an old friend of Mineloader, in regular contact.
+- Said she will possibly have work to send this year or next.
+
+Old friend of Mineloader (unnamed):
+- Gentleman known 20+ years, starting new business.
+- Exploring new partnership. Name and plans to be shared once he is comfortable.
+
+XBOX:
+- Adrien Cho and Esteban Lora in contact several times a year. Likely to keep in touch.
+
+Scopely:
+- Connected with Ivan Chan. Listed in their vendor pool.
+- They need Level Art and Level Design for a stylized title. Portfolio sent.
+- Not yet worked on their project.
+
+Aspyr:
+- Invited by Ryan to visit their Austin studio in March.
+- Details available in one-on-one conversation.
+
+NOT CURRENTLY WORKING WITH:
+Riot, Crea-ture, BKOM, ArenaNet, BioWare, Gun Interactive, Turtle Rock, Rogue Factor, Yellow Brick Games, Invoke, The Pokemon Company, Guerrilla Games, Respawn, Sony PlayStation Third-Party Team, Avalanche, Sharkmob, Activision, Gameloft, King`
+  }
+];
+
+// Build full context string once
+const FULL_CONTEXT = DOCUMENTS.map(d => `===== DOCUMENT: ${d.name} =====\n${d.content}`).join('\n\n');
+
+const SYSTEM_PROMPT = `You are a business development intelligence assistant for a global game art studio network. The network includes: Vertic Studios, Winking GDG, Winking Nanjing (with BD leads Francis and Ridda), Ampera/NA BD (led by Luc), OPC, and Mineloader Studios.
+
+You have been provided with BD status reports from all of these studios. Your answers must be based EXCLUSIVELY on the content of these documents. Do not use outside knowledge or make assumptions beyond what is written.
+
+STRICT RULES:
+1. Only answer from the document contents below. Do not add information from general knowledge.
+2. If the answer to a question is not found in the documents, respond clearly: "This information is not available in the provided documents."
+3. If a question is partially answerable, answer what you can and clearly state what is not covered.
+4. Respond in the same language as the user's question — Chinese if asked in Chinese, English if asked in English.
+5. You have memory of the current conversation. Use prior context to understand follow-up questions.
+6. Structure answers clearly. Use bullet points or sections when comparing studios.
+7. Be concise but complete.
+
+--- DOCUMENTS BEGIN ---
+${FULL_CONTEXT}
+--- DOCUMENTS END ---`;
+
+// ── Chat ──────────────────────────────────────
+const qInput = document.getElementById('qInput');
+qInput.addEventListener('input', () => {
+  qInput.style.height = 'auto';
+  qInput.style.height = Math.min(qInput.scrollHeight, 110) + 'px';
+});
+qInput.addEventListener('keydown', e => {
+  if (e.shiftKey && e.key === 'Enter') { e.preventDefault(); sendQuestion(); }
+});
+
+function useChip(el) {
+  qInput.value = el.textContent;
+  qInput.dispatchEvent(new Event('input'));
+  sendQuestion();
+}
+
+async function sendQuestion() {
+  const q = qInput.value.trim();
+  if (!q || busy) return;
+
+  const welcome = document.getElementById('welcomeScreen');
+  if (welcome) welcome.remove();
+
+  addMsg('user', q);
+  chatHistory.push({ role: 'user', content: q });
+
+  qInput.value = '';
+  qInput.style.height = 'auto';
+  busy = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  const tid = addTyping();
+  try {
+    const text = await callClaude();
+    removeNode(tid);
+    addMsg('ai', text);
+    chatHistory.push({ role: 'assistant', content: text });
+  } catch (err) {
+    removeNode(tid);
+    addMsg('ai', `Request failed: ${err.message}`);
+  }
+  busy = false;
+  document.getElementById('sendBtn').disabled = false;
+  qInput.focus();
+}
+
+function addMsg(role, text) {
+  const wrap = document.createElement('div');
+  wrap.className = `msg-wrap ${role}`;
+
+  const av = document.createElement('div');
+  av.className = 'avatar';
+  av.textContent = role === 'user' ? 'YOU' : '✦';
+
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = role === 'ai' ? fmtAI(text) : `<p>${esc(text)}</p>`;
+
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+
+  const msgs = document.getElementById('messages');
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function fmtAI(txt) {
+  return txt.split(/\n\n+/).filter(Boolean)
+    .map(p => `<p>${p.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>`)
+    .join('');
+}
+
+function esc(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function addTyping() {
+  const id = 'tp-' + Date.now();
+  const wrap = document.createElement('div');
+  wrap.id = id;
+  wrap.className = 'msg-wrap ai';
+  wrap.innerHTML = `<div class="avatar">✦</div><div class="typing-bubble"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div>`;
+  const msgs = document.getElementById('messages');
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+  return id;
+}
+
+function removeNode(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+function startNewConvo() {
+  chatHistory = [];
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'history-reset';
+  div.innerHTML = `<span>New conversation started</span>`;
+  msgs.appendChild(div);
+  qInput.focus();
+}
+
+// ── Claude API ────────────────────────────────
+async function callClaude() {
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: SYSTEM_PROMPT,
+      messages: chatHistory
+    })
+  });
+
+  if (!resp.ok) {
+    const e = await resp.json().catch(() => ({}));
+    throw new Error(e.error?.message || `HTTP ${resp.status}`);
+  }
+
+  const data = await resp.json();
+  return (data.content || []).map(b => b.text || '').join('');
+}
+</script>
+</body>
+</html>
