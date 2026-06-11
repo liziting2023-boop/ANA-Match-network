@@ -618,9 +618,9 @@ kbd {
         <p>BD reports from Vertic, Winking GDG, Winking Nanjing, Ampera NA, OPC, Mineloader, and BIG (Jocelyn) are loaded and ready to query.</p>
         <div class="chips">
           <div class="chip" onclick="useChip(this)">Which studios have overlapping clients with Vertic?</div>
-          <div class="chip" onclick="useChip(this)">Which studios have contact with Riot Games?</div>
-          <div class="chip" onclick="useChip(this)">Where do BIG and the NA BD team have overlapping clients?</div>
-          <div class="chip" onclick="useChip(this)">Which clients are being pursued by multiple studios?</div>
+          <div class="chip" onclick="useChip(this)">Where do BIG and NA BD (Ampera/Luc) have overlapping clients?</div>
+          <div class="chip" onclick="useChip(this)">Which studios and Ampera are both in contact with the same clients?</div>
+          <div class="chip" onclick="useChip(this)">Which clients are being pursued by 3 or more studios?</div>
         </div>
       </div>
     </div>
@@ -672,16 +672,21 @@ function doLogin() {
 
 // ── Follow-up question suggestions ────────────
 const FOLLOWUP_CHIPS = [
-  'Which studios also have contact with this client?',
-  'Are there overlapping clients between BIG and NA BD?',
-  'Which clients are being pursued by 3 or more studios?',
-  'Which Vertic clients overlap with other studios?',
-  'Which Winking clients overlap with Mineloader?',
-  'Which clients have NDA signed across studios?',
-  'Which studios are both in contact with Sucker Punch?',
-  'Which studios are both in contact with Bungie?',
+  'Which studios have overlapping clients with Vertic?',
+  'Which studios have overlapping clients with Mineloader?',
+  'Which studios have overlapping clients with OPC?',
+  'Which studios have overlapping clients with Winking Nanjing?',
+  'Where do BIG and the NA BD (Ampera/Luc) team have overlapping clients?',
   'Which studios are both in contact with Riot Games?',
-  'Which clients are in active production vs. still in discussion?',
+  'Which studios are both in contact with Bungie?',
+  'Which studios are both in contact with Sucker Punch?',
+  'Which studios are both in contact with Gearbox?',
+  'Which studios are both in contact with Epic Games?',
+  'Which clients are being pursued by 3 or more studios simultaneously?',
+  'Which studios and Ampera are both in contact with the same clients?',
+  'Where do Vertic and Ampera have overlapping client contacts?',
+  'Where do Mineloader and BIG have overlapping client contacts?',
+  'Which clients have NDA signed across multiple studios?',
 ];
 
 function getFollowupChips() {
